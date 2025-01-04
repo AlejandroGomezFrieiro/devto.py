@@ -1,7 +1,7 @@
 { pkgs, lib, config, inputs, ... }:
 
 {
-  packages = [ pkgs.git ];
+ packages= [ pkgs.git ];
   languages.python.enable = true;
   languages.python.uv.enable = true;
   languages.python.uv.sync.enable = true;
@@ -23,11 +23,12 @@
     # "devenv:enterShell".after = [ "myproj:setup" ];
   # };
 
-  # pre-commit = {
-  #     hooks = {
-  #
-  #     }
-  # };
+  pre-commit = {
+      hooks = {
+          ruff.enable = true;
+
+      };
+  };
   # https://devenv.sh/tests/
   enterTest = ''
     echo "Running tests"
