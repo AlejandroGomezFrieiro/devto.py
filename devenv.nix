@@ -26,6 +26,7 @@
   pre-commit = {
       hooks = {
           ruff.enable = true;
+          ruff-format.enable = true;
 
       };
   };

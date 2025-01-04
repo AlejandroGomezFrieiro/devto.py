@@ -1,8 +1,7 @@
 import requests
-import json
-import os
 from pydantic import BaseModel, Field
 from typing import Optional
+from loguru import logger
 
 
 class DevtoArticle(BaseModel):
@@ -46,7 +45,7 @@ class DevtoApi(BaseModel):
         self.header = {"Content-Type": "application/json", "api-key": self.api_key}
 
     def publish_article(self, article: DevtoArticle) -> None:
-        print(article.to_payload())
+        logger.debug(f"Pushing payload {article.to_payload}")
         response = requests.post(
             url="https://dev.to/api/articles",
             headers=self.header,
