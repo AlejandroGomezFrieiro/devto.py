@@ -17,7 +17,10 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
   "ruff>=0.7.2",
-  {include-group = "test"}
+  {include-group = "test"},
+  "mypy>=1.14.1",
+  "isort>=5.13.2",
+  "types-requests>=2.32.0.20241016",
 ]
 test = [
   "pytest-cov>=6.0.0",

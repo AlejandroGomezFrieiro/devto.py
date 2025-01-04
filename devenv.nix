@@ -25,6 +25,7 @@
 
   pre-commit = {
       hooks = {
+          # mypy.enable = true;
           ruff.enable = true;
           ruff-format.enable = true;
 

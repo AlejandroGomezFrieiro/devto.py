@@ -1,25 +1,49 @@
-import requests
+from typing import Any, Optional
+
 from pydantic import BaseModel, Field
-from typing import Optional
-from loguru import logger
 
 
-class DevtoArticle(BaseModel):
-    """
-    Pydantic model corresponding to an article.
+class ArticleBody(BaseModel):
+    """Pydantic model representing an arbitrary article or blogpost with a title and a markdown body.
+
+    Attributes:
+        title: Title of the article
+        body_markdown: Contents of the article in markdown.
     """
 
     title: str
     body_markdown: str = Field(default="")
+
+
+class DevtoArticle(ArticleBody):
+    """Pydantic model representing a devto article.
+
+    Attributes:
+        published: Whether the article is published or not.
+        series: Series the article belongs to.
+        main_image: Article image.
+        canonical_url: Canonical URL.
+        description: Description.
+        tags: List of tags.
+        organization: Organization the article belongs to.
+    """
+
+    id: Optional[int] = None
     published: Optional[bool] = None
     series: Optional[str] = None
     main_image: Optional[str] = None
     canonical_url: Optional[str] = None
     description: Optional[str] = None
-    tags: list[str] = Field(default_factory=lambda: [])
-    organization: Optional[str] = None
+    tags: Optional[str] = None  # = Field(default_factory=lambda: [])
+    organization: Optional[dict] = None
 
-    def to_payload(self) -> dict[str, dict[str, any]]:
+    # @model_validator(mode="after")
+    # def check_tags(self) -> Self:
+    #     if len(self.tags) > 4:
+    #         raise ValueError("DevTo only acepts a maximum of 4 tags per article.")
+    #     return self
+
+    def to_payload(self) -> dict[str, dict[str, Any]]:
         """
         Convert the model to a payload that can be sent through post.
         """
@@ -30,31 +54,3 @@ class DevtoArticle(BaseModel):
                 if value is not None
             }
         }
-
-
-class DevtoApi(BaseModel):
-    """
-    Pydantic model containing the DevtoApi.
-    """
-
-    api_key: Optional[str] = None
-    timeout: int = 10
-    header: Optional[dict[str, str]] = None
-
-    def model_post_init(self, _context):
-        self.header = {"Content-Type": "application/json", "api-key": self.api_key}
-
-    def publish_article(self, article: DevtoArticle) -> None:
-        logger.debug(f"Pushing payload {article.to_payload}")
-        response = requests.post(
-            url="https://dev.to/api/articles",
-            headers=self.header,
-            json=article.to_payload(),
-            timeout=self.timeout,
-        )
-        match response.status_code:
-            case 201:
-                print("Article published")
-                print("Response:", response.json())
-            case _:
-                print(f"Error. Status code: {response.status_code}")
