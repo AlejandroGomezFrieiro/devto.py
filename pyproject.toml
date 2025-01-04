@@ -1,0 +1,28 @@
+[project]
+name = "devto_api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.10.4",
+    "requests>=2.32.3",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+  "ruff>=0.7.2",
+  {include-group = "test"}
+]
+test = [
+  "pytest-cov>=6.0.0",
+  "pytest>=8.3.3",
+]
+
+[[tool.uv.index]]
+url = "https://pypi.org/simple"
+default = true
