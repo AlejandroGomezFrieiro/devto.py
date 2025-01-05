@@ -14,8 +14,10 @@ jobs:
     - uses: cachix/cachix-action@v14
       with:
         name: devenv
-    - name: Activate shell
-      run: nix develop . --no-pure-eval
+    - name: Develop shell
+      uses: nicknovitski/nix-develop@v1
+      with:
+        arguments: --no-pure-eval
     - name: Run tests
       run: pytest
   lint:
@@ -29,7 +31,9 @@ jobs:
     - uses: cachix/cachix-action@v14
       with:
         name: devenv
-    - name: Activate shell
-      run: nix develop . --no-pure-eval
+    - name: Develop shell
+      uses: nicknovitski/nix-develop@v1
+      with:
+        arguments: --no-pure-eval
     - name: Run linting
       run: ruff check
