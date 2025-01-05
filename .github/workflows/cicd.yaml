@@ -31,7 +31,7 @@ jobs:
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
-        uv build
+        semantic-release publish
     - name: Store the distribution packages
       uses: actions/upload-artifact@v4
       with:
@@ -40,7 +40,7 @@ jobs:
     - name: pypi-publish
       uses: pypa/gh-action-pypi-publish@v1.12.3
       with:
-        repository_url: https://test.pypi.org/legacy/
+        repository_url: https://pypi.org/legacy/
     
   publish:
     name: "Publish to Pypi"
@@ -70,38 +70,7 @@ jobs:
     - name: Publish to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        user: __token__
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
         repository_url: https://test.pypi.org/legacy/
-      # - name: Setup | Checkout Repository at workflow sha
-      #   uses: actions/checkout@v4
-      #   with:
-      #     fetch-depth: 0
-      #     ref: ${{ github.sha }}
-      #
-      # - name: Setup | Force correct release branch on workflow sha
-      #   run: |
-      #     git checkout -B ${{ github.ref_name }} ${{ github.sha }}
-      #
-      # - name: Action | Semantic Version Release
-      #   id: release
-      #   # Adjust tag with desired version if applicable.
-      #   uses: python-semantic-release/python-semantic-release@v9.12.0
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     git_committer_name: "github-actions"
-      #     git_committer_email: "actions@users.noreply.github.com"
-      #
-      # - name: Publish | Upload package to PyPI
-      #   uses: pypa/gh-action-pypi-publish@v1.12.3
-      #   if: steps.release.outputs.released == 'true'
-      #
-      # - name: Publish | Upload to GitHub Release Assets
-      #   uses: python-semantic-release/publish-action@v9.8.9
-      #   if: steps.release.outputs.released == 'true'
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     tag: ${{ steps.release.outputs.tag }}
 
 
   test:
