@@ -16,17 +16,6 @@ dependencies = [
 [build-system]
 requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
-# [build-system]
-# requires = ["hatchling"]
-# build-backend = "hatchling.build"
-#
-# [tool.hatch.version]
-# source = "uv-dynamic-versioning"
-
-# [tool.uv-dynamic-versioning]
-# vcs = "git"
-# style = "semver"
-# bump = "true"
 
 [dependency-groups]
 dev = [
