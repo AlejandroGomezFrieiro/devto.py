@@ -5,7 +5,10 @@
   inputs,
   ...
 }: {
-  packages = [pkgs.git];
+  packages = [
+  pkgs.git
+  pkgs.act
+  ];
   languages.python.enable = true;
   languages.python.uv.enable = true;
   languages.python.uv.sync.enable = true;
@@ -24,6 +27,7 @@
     };
   };
   enterTest = ''
+    act -l
     pytest
   '';
 }

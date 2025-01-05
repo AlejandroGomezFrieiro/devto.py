@@ -1,5 +1,7 @@
+name: "Setup Nix"
+description: "Setups a nix devshell"
 runs:
-  using: composite
+  using: "composite"
   steps:
     - uses: cachix/install-nix-action@v26
     - uses: cachix/cachix-action@v14
