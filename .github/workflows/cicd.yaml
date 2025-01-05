@@ -18,10 +18,10 @@ jobs:
       uses: nicknovitski/nix-develop@v1
       with:
         arguments: --no-pure-eval
-    # - name: Sync shell
-    #   run: uv sync
+    - name: Sync shell
+      run: uv sync
     - name: Run tests
-      run: devenv test
+      run: pytest
   lint:
     strategy:
       matrix:
@@ -37,7 +37,7 @@ jobs:
       uses: nicknovitski/nix-develop@v1
       with:
         arguments: --no-pure-eval
-    # - name: Sync shell
-    #   run: uv sync
+    - name: Sync shell
+      run: uv sync
     - name: Run linting
       run: ruff check
