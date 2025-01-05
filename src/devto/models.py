@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_serializer
 
 
 class ArticleBody(BaseModel):
@@ -37,20 +37,6 @@ class DevtoArticle(ArticleBody):
     tags: Optional[str] = None  # = Field(default_factory=lambda: [])
     organization: Optional[dict] = None
 
-    # @model_validator(mode="after")
-    # def check_tags(self) -> Self:
-    #     if len(self.tags) > 4:
-    #         raise ValueError("DevTo only acepts a maximum of 4 tags per article.")
-    #     return self
-
-    def to_payload(self) -> dict[str, dict[str, Any]]:
-        """
-        Convert the model to a payload that can be sent through post.
-        """
-        return {
-            "article": {
-                key: value
-                for key, value in self.model_dump().items()
-                if value is not None
-            }
-        }
+    @model_serializer
+    def article_model(self) -> dict[str, Any]:
+        return {"article": {key: value for key, value in self if value is not None}}

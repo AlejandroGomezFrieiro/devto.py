@@ -1,6 +1,12 @@
-from devto_api.api import DevtoApi
+import asyncio
+
+from devto.client import DevtoClient
 
 
-def test_get_all_articles():
-    api = DevtoApi()
-    assert len(api.published_articles(per_page=1)) == 1
+def test_published_articles():
+    async def f():
+        async with DevtoClient() as client:
+            return await client.published_articles()
+
+    articles = asyncio.run(f())
+    assert len(articles) == 30
