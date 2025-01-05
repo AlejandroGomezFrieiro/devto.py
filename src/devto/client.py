@@ -8,6 +8,8 @@ from pydantic import BaseModel, HttpUrl, SecretStr
 
 from .models import DevtoArticle
 
+__all__ = ["DevtoClient"]
+
 ApiKey: TypeAlias = SecretStr
 Header: TypeAlias = dict[str, Any]
 
