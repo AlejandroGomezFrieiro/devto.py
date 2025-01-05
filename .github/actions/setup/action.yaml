@@ -11,3 +11,5 @@ runs:
       uses: nicknovitski/nix-develop@v1
       with:
         arguments: --no-pure-eval
+    - name: Sync environment
+      uses: uv sync

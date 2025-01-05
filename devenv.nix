@@ -6,8 +6,8 @@
   ...
 }: {
   packages = [
-  pkgs.git
-  pkgs.act
+      pkgs.git
+      pkgs.act
   ];
   languages.python.enable = true;
   languages.python.uv.enable = true;
@@ -15,8 +15,8 @@
   languages.python.uv.sync.allExtras = true;
   languages.python.venv.enable = true;
 
-  scripts.pytest.exec = ''
-    pytest
+  scripts.build.exec = ''
+      uv build
   '';
 
   pre-commit = {
@@ -27,7 +27,6 @@
     };
   };
   enterTest = ''
-    act -l
-    pytest
+    act --graph
   '';
 }

@@ -231,7 +231,7 @@ wheels = [
 
 [[package]]
 name = "devto"
-version = "0.0.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
