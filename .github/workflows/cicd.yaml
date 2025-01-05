@@ -16,15 +16,6 @@ jobs:
       id-token: write
       contents: write
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Install uv
-      run: pipx install uv
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-    - name: Install dependencies
-      run: uv sync
     - name: Prepare package for release
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -51,15 +42,6 @@ jobs:
       id-token: write
       contents: write
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Install uv
-      run: pipx install uv
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-    - name: Install dependencies
-      run: uv sync
     - name: Prepare package for release
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -72,42 +54,27 @@ jobs:
       with:
         repository_url: https://test.pypi.org/legacy/
 
-
+  lock_file:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: ./.github/actions/setup_environment/env.yaml
+      - run: uv lock --locked
   test:
     strategy:
       matrix:
         os: [ubuntu-latest] #, macos-latest]
     runs-on: ${{ matrix.os }}
+    needs: [lock_file]
     steps:
-    - uses: actions/checkout@v4
-    - uses: cachix/install-nix-action@v26
-    - uses: cachix/cachix-action@v14
-      with:
-        name: devenv
-    - name: Develop shell
-      uses: nicknovitski/nix-develop@v1
-      with:
-        arguments: --no-pure-eval
-    - name: Sync shell
-      run: uv sync
     - name: Run tests
       run: pytest
+
   lint:
     strategy:
       matrix:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
+    needs: [lock_file]
     steps:
-    - uses: actions/checkout@v4
-    - uses: cachix/install-nix-action@v26
-    - uses: cachix/cachix-action@v14
-      with:
-        name: devenv
-    - name: Develop shell
-      uses: nicknovitski/nix-develop@v1
-      with:
-        arguments: --no-pure-eval
-    - name: Sync shell
-      run: uv sync
     - name: Run linting
       run: ruff check
