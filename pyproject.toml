@@ -14,15 +14,15 @@ dependencies = [
 ]
 
 [build-system]
-requires = ["hatchling", "uv-dynamic-versioning"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
+#
+# [tool.hatch.version]
+# source = "uv-dynamic-versioning"
 
-[tool.hatch.version]
-source = "uv-dynamic-versioning"
-
-[tool.uv-dynamic-versioning]
-vcs = "git"
-style = "semver"
+# [tool.uv-dynamic-versioning]
+# vcs = "git"
+# style = "semver"
 # bump = "true"
 
 [dependency-groups]
@@ -43,13 +43,11 @@ test = [
 url = "https://pypi.org/simple"
 default = true
 
-
 [tool.semantic_release]
-branch = "main"                             # branch to make releases of
-# tag_format = "v{version}"
 version_variable = "pyproject.toml:version" # version location
+branch = "main"                             # branch to make releases of
 changelog_file = "CHANGELOG.md"             # changelog file
-# build_command = "uv build"
+build_command = "uv build"              # build dists
 dist_path = "dist/"                         # where to put dists
 upload_to_release = true                    # auto-create GitHub release
 upload_to_pypi = false                      # don't auto-upload to PyPI
