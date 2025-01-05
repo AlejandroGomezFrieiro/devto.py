@@ -1,7 +1,7 @@
 [project]
 name = "devto"
-version = "0.1.0"
-description = "Add your description here"
+dynamic = ["version"]
+description = "Modern Dev.To API client built with aiohttp and pydantic"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -13,8 +13,8 @@ dependencies = [
 ]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
 
 [dependency-groups]
 dev = [
@@ -23,6 +23,7 @@ dev = [
   "mypy>=1.14.1",
   "isort>=5.13.2",
   "types-requests>=2.32.0.20241016",
+  "python-semantic-release>=9.15.2",
 ]
 test = [
   "pytest-cov>=6.0.0",
@@ -32,3 +33,15 @@ test = [
 [[tool.uv.index]]
 url = "https://pypi.org/simple"
 default = true
+
+
+[tool.semantic_release]
+version_variable = "pyproject.toml:version" # version location
+branch = "main"                             # branch to make releases of
+changelog_file = "CHANGELOG.md"             # changelog file
+build_command = "uv build"              # build dists
+dist_path = "dist/"                         # where to put dists
+upload_to_release = true                    # auto-create GitHub release
+upload_to_pypi = false                      # don't auto-upload to PyPI
+remove_dist = false                         # don't remove dists
+patch_without_tag = true                    # patch release by default
