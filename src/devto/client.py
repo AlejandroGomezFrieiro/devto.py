@@ -35,13 +35,22 @@ class DevtoClient:
             else "",
         }
 
-    async def publish_article(
+    async def update_article(
         self,
         article: DevtoArticle,
         use_cache: bool = True,
     ):
         logger.debug(f"Publishing article {article}")
         response = await self._post("articles", data=article, use_cache=use_cache)
+        return response
+
+    async def publish_article(
+        self,
+        article: DevtoArticle,
+        use_cache: bool = True,
+    ):
+        logger.debug(f"Publishing article {article}")
+        response = await self._put("articles", data=article, use_cache=use_cache)
         return response
 
     async def published_articles(
@@ -74,6 +83,38 @@ class DevtoClient:
 
         # return data
         return [DevtoArticle(**article) for article in data]
+
+    async def _put(
+        self, endpoint: str, data: BaseModel, use_cache: bool, **kwargs
+    ) -> dict[str, Any]:
+        if self._session is None:
+            raise RuntimeError("Use `start` before making requests.")
+
+        request_url = HttpUrl(self.BASE_URL + endpoint).unicode_string()
+        logger.debug(f"PUT: {request_url}")
+
+        payload = data.model_dump()
+
+        logger.debug(f"payload: {payload}")
+        if not use_cache and isinstance(self._session, CachedSession):
+            async with (
+                self._session.disabled(),
+                self._session.post(request_url, json=payload) as resp,
+            ):
+                logger.debug(resp.status)
+                match resp.status:
+                    case resp.status if 200 <= resp.status <= 299:
+                        return await resp.json()
+                    case _:
+                        raise ValueError("Error posting the data")
+        else:
+            async with self._session.post(request_url, json=payload) as resp:
+                logger.debug(resp.status)
+                match resp.status:
+                    case resp.status if 200 <= resp.status <= 299:
+                        return await resp.json()
+                    case _:
+                        raise ValueError("Error posting the data")
 
     async def _post(
         self, endpoint: str, data: BaseModel, use_cache: bool, **kwargs
