@@ -1,4 +1,4 @@
-# devto_api
+# devto.py
 
 `devto` is a modern Python API client for the Forem API V1, written with `aiohttp` and `pydantic`.
 
