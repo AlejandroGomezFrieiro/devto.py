@@ -35,7 +35,7 @@ jobs:
     - name: pypi-publish
       uses: pypa/gh-action-pypi-publish@v1.12.3
       with:
-        repository_url: https://pypi.org/legacy/
+        repository_url: https://test.pypi.org/legacy/
     
   publish:
     name: "Publish to Pypi"
@@ -45,6 +45,9 @@ jobs:
     permissions:
       id-token: write
       contents: write
+    environment:
+      name: pypi
+      url: https://pypi.org/p/devto
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/setup
@@ -60,7 +63,7 @@ jobs:
     - name: Publish to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        repository_url: https://test.pypi.org/legacy/
+        repository_url: https://pypi.org/legacy/
 
   test:
     strategy:
