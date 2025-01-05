@@ -26,11 +26,23 @@ class DevtoClient:
     ) -> None:
         self._session = session
         self._cache = SQLiteBackend(cache_path, expire_after=cache_ttl)
+        self._api_key = SecretStr(api_key) if api_key is not None else None
         self._headers = headers or {
             "Accept": "application/vnd.forem.api-v1+json",
             "Content-Type": "application/json",
+            "api-key": self._api_key.get_secret_value()
+            if self._api_key is not None
+            else "",
         }
-        self._api_key = SecretStr(api_key) if api_key is not None else None
+
+    async def publish_article(
+        self,
+        article: DevtoArticle,
+        use_cache: bool = True,
+    ):
+        logger.debug(f"Publishing article {article}")
+        response = await self._post("articles", data=article, use_cache=use_cache)
+        return response
 
     async def published_articles(
         self,
@@ -72,27 +84,28 @@ class DevtoClient:
         request_url = HttpUrl(self.BASE_URL + endpoint).unicode_string()
         logger.debug(f"POST: {request_url}")
 
+        payload = data.model_dump()
+
+        logger.debug(f"payload: {payload}")
         if not use_cache and isinstance(self._session, CachedSession):
             async with (
                 self._session.disabled(),
-                self._session.post(request_url, json=data.model_dump()) as resp,
+                self._session.post(request_url, json=payload) as resp,
             ):
                 logger.debug(resp.status)
                 match resp.status:
                     case resp.status if 200 <= resp.status <= 299:
-                        data = await resp.json()
+                        return await resp.json()
                     case _:
                         raise ValueError("Error posting the data")
         else:
-            async with self._session.get(request_url) as resp:
+            async with self._session.post(request_url, json=payload) as resp:
                 logger.debug(resp.status)
                 match resp.status:
                     case resp.status if 200 <= resp.status <= 299:
-                        data = await resp.json()
+                        return await resp.json()
                     case _:
                         raise ValueError("Error posting the data")
-
-        return data
 
     async def _get(self, endpoint: str, use_cache: bool, **kwargs) -> dict[str, Any]:
         if self._session is None:
@@ -134,6 +147,7 @@ class DevtoClient:
 
     async def start(self) -> None:
         headers = self._headers
+        logger.debug(f"headers: {headers}")
         self._session = self._session or CachedSession(
             headers=headers, cache=self._cache
         )
