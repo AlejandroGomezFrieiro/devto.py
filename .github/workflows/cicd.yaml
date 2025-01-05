@@ -57,7 +57,7 @@ jobs:
   lock_file:
     runs-on: [ubuntu-latest]
     steps:
-      - uses: ./.github/actions/setup_environment/env.yaml
+      - uses: ./.github/actions/setup_environment/action.yaml
       - run: uv lock --locked
   test:
     strategy:
