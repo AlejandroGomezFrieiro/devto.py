@@ -10,6 +10,9 @@ jobs:
     runs-on: "ubuntu-latest"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [test, lint]
+    permissions:
+      id-token: write
+      contents: write
     steps:
       - name: Setup | Checkout Repository at workflow sha
         uses: actions/checkout@v4
