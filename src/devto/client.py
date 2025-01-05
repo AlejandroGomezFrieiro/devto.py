@@ -41,7 +41,9 @@ class DevtoClient:
         use_cache: bool = True,
     ):
         logger.debug(f"Publishing article {article}")
-        response = await self._post("articles", data=article, use_cache=use_cache)
+        response = await self._post(
+            f"articles/{article.id}", data=article, use_cache=use_cache
+        )
         return response
 
     async def publish_article(

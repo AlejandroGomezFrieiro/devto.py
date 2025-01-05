@@ -2,6 +2,8 @@
 
 `devto` is a modern Python API client for the Forem API V1, written with `aiohttp` and `pydantic`.
 
+At the moment, functionality only allows one to query articles and publish/update an existing article.
+
 
 ## Installation
 
@@ -32,6 +34,12 @@ article = DevtoArticle(
     body_markdown="Article body"
 )
 asyncio.run(publish_article(article))
+
+async def edit_article(article):
+    async with DevtoClient(api_key = "<API_KEY>") as client:
+        return await client.update_article(article)
+
+asyncio.run(edit_article(article))
 ```
 
 ## Contributing

@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from pydantic import BaseModel, Field, model_serializer
+from pydantic import BaseModel, ConfigDict, Field, model_serializer
 
 
 class ArticleBody(BaseModel):
@@ -28,6 +28,7 @@ class DevtoArticle(ArticleBody):
         organization: Organization the article belongs to.
     """
 
+    model_config = ConfigDict(extra="ignore")
     id: Optional[int] = None
     published: Optional[bool] = None
     series: Optional[str] = None
