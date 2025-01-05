@@ -57,6 +57,7 @@ jobs:
   lock_file:
     runs-on: [ubuntu-latest]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup_environment/action.yaml
       - run: uv lock --locked
   test:
