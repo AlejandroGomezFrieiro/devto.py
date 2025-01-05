@@ -1,4 +1,4 @@
-from typing import Any, Optional, Self, TypeAlias
+from typing import Any, Literal, Optional, Self, TypeAlias
 
 import aiohttp
 from aiohttp_client_cache.backends.sqlite import SQLiteBackend
@@ -6,6 +6,7 @@ from aiohttp_client_cache.session import CachedSession
 from loguru import logger
 from pydantic import BaseModel, HttpUrl, SecretStr
 
+from .models import DevtoArticle
 
 ApiKey: TypeAlias = SecretStr
 Header: TypeAlias = dict[str, Any]
@@ -31,19 +32,45 @@ class DevtoClient:
         }
         self._api_key = SecretStr(api_key) if api_key is not None else None
 
-    async def published_articles(self, *, use_cache: bool = True) -> dict[str, Any]:
-        data = await self._get("articles", use_cache)
+    async def published_articles(
+        self,
+        page: int = 1,
+        per_page: int = 30,
+        tag: Optional[str] = None,
+        tags: Optional[str] = None,
+        tags_exclude: Optional[str] = None,
+        username: Optional[str] = None,
+        state: Optional[Literal["fresh", "rising", "all"]] = None,
+        top: Optional[int] = None,
+        collection_id: Optional[int] = None,
+        use_cache: bool = True,
+    ) -> dict[str, Any]:
+        data = await self._get(
+            "articles",
+            use_cache,
+            page=page,
+            per_page=per_page,
+            tag=tag,
+            tags=tags,
+            tags_exclude=tags_exclude,
+            username=username,
+            state=state,
+            top=top,
+            collection_id=collection_id,
+        )
         logger.debug(f"Data is {data}")
-        return data
+
+        # return data
+        return [DevtoArticle(**article) for article in data]
 
     async def _post(
-        self, endpoint: str, data: BaseModel, use_cache: bool
+        self, endpoint: str, data: BaseModel, use_cache: bool, **kwargs
     ) -> dict[str, Any]:
         if self._session is None:
             raise RuntimeError("Use `start` before making requests.")
 
         request_url = HttpUrl(self.BASE_URL + endpoint).unicode_string()
-        logger.debug(f"SET: {request_url}")
+        logger.debug(f"POST: {request_url}")
 
         if not use_cache and isinstance(self._session, CachedSession):
             async with (
@@ -67,15 +94,20 @@ class DevtoClient:
 
         return data
 
-    async def _get(self, endpoint: str, use_cache: bool) -> dict[str, Any]:
+    async def _get(self, endpoint: str, use_cache: bool, **kwargs) -> dict[str, Any]:
         if self._session is None:
             raise RuntimeError("Use `start` before making requests.")
 
         request_url = HttpUrl(self.BASE_URL + endpoint).unicode_string()
         logger.debug(f"GET: {request_url}")
 
+        kwargs = {key: value for key, value in kwargs.items() if value is not None}
+
         if not use_cache and isinstance(self._session, CachedSession):
-            async with self._session.disabled(), self._session.get(request_url) as resp:
+            async with (
+                self._session.disabled(),
+                self._session.get(request_url, params=kwargs) as resp,
+            ):
                 logger.debug(resp.status)
                 match resp.status:
                     case resp.status if 200 <= resp.status <= 299:
@@ -83,7 +115,7 @@ class DevtoClient:
                     case _:
                         raise ValueError("Error fetching the data.")
         else:
-            async with self._session.get(request_url) as resp:
+            async with self._session.get(request_url, params=kwargs) as resp:
                 logger.debug(resp.status)
                 match resp.status:
                     case resp.status if 200 <= resp.status <= 299:
@@ -102,8 +134,6 @@ class DevtoClient:
 
     async def start(self) -> None:
         headers = self._headers
-        # if self._api_key is not None:
-        #     headers['api-key'] = self._api_key.get_secret_value()
         self._session = self._session or CachedSession(
             headers=headers, cache=self._cache
         )
@@ -113,31 +143,6 @@ class DevtoClient:
             await self._session.close()
 
 
-# class ApiWrapper(BaseModel):
-#     url: HttpUrl = HttpUrl(url="https://dev.to/api/")
-#     api_key: Optional[ApiKey] = None
-#     timeout: int = 10
-
-
-# class DevtoApi(ApiWrapper):
-#     @property
-#     def header(self):
-#         return {
-#             "Accept": "application/vnd.forem.api-v1+json",
-#             "Content-Type": "application/json",
-#             "api-key": self.api_key.get_secret_value()
-#             if self.api_key is not None
-#             else "",
-#         }
-#
-#     async def get(self, endpoint: str, **kwargs):
-#         with session.get(self.url.unicode_string() + endpont) as response:
-#         return requests.get(
-#             url=HttpUrl(self.url.unicode_string() + endpoint).unicode_string(),
-#             headers=self.header,
-#             timeout=self.timeout,
-#             params=kwargs,
-#         )
 #
 #     def published_articles(
 #         self,
