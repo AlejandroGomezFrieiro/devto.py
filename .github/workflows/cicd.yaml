@@ -30,6 +30,8 @@ jobs:
           version: "latest"
       - name: Sync
         run: uv sync
+      - name: Build
+        run: uv build
 
       - name: Action | Semantic Version Release
         id: release
