@@ -18,6 +18,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/setup
+    - name: Sync environment
+      run: uv sync
     - name: Prepare package for release
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -46,6 +48,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/setup
+    - name: Sync environment
+      run: uv sync
     - name: Prepare package for release
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -58,20 +62,16 @@ jobs:
       with:
         repository_url: https://test.pypi.org/legacy/
 
-  lock_file:
-    runs-on: [ubuntu-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
   test:
     strategy:
       matrix:
         os: [ubuntu-latest] #, macos-latest]
     runs-on: ${{ matrix.os }}
-    needs: [lock_file]
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/setup
+    - name: Sync environment
+      run: uv sync
     - name: Run tests
       run: pytest
 
@@ -80,9 +80,10 @@ jobs:
       matrix:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
-    needs: [lock_file]
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/setup
+    - name: Sync environment
+      run: uv sync
     - name: Run linting
       run: ruff check
