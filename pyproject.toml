@@ -1,6 +1,6 @@
 [project]
 name = "devto"
-version = "0.1.0"
+version = "0.1.1"
 # dynamic = ["version"]
 description = "Modern Dev.To API client built with aiohttp and pydantic"
 readme = "README.md"
