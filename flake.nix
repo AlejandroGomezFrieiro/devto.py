@@ -27,8 +27,8 @@
       systems = nixpkgs.lib.systems.flakeExposed;
       flake = {
         build = nixpkgs.writeScriptBin "build" ''
-            uv build
-          '';
+          uv build
+        '';
       };
       perSystem = {
         config,

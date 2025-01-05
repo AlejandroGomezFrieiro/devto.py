@@ -10,7 +10,7 @@ At the moment, functionality only allows one to query articles and publish/updat
 Currently there are no Pypi wheels, use
 
 ```bash
-pip install git+https://github.com/AlejandroGomezFrieiro/devto_py.git
+pip install devto
 ```
 
 ## Usage

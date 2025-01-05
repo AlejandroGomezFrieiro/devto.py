@@ -6,8 +6,9 @@
   ...
 }: {
   packages = [
-      pkgs.git
-      pkgs.act
+    pkgs.git
+    pkgs.act
+    pkgs.commitizen
   ];
   languages.python.enable = true;
   languages.python.uv.enable = true;
@@ -16,12 +17,13 @@
   languages.python.venv.enable = true;
 
   scripts.build.exec = ''
-      uv build
+    uv build
   '';
 
   pre-commit = {
     hooks = {
-      # mypy.enable = true;
+      alejandra.enable = true;
+      commitizen.enable = true;
       ruff.enable = true;
       ruff-format.enable = true;
     };
