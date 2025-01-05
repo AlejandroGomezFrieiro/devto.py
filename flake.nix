@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nix-github-actions.url = "github:nix-community/nix-github-actions";
     devenv = {
       url = "github:cachix/devenv";
     };
@@ -18,7 +17,6 @@
     nixpkgs,
     devenv,
     flake-parts,
-    nix-github-actions,
     ...
   } @ inputs:
     flake-parts.lib.mkFlake {inherit inputs;}
@@ -31,7 +29,6 @@
         build = nixpkgs.writeScriptBin "build" ''
             uv build
           '';
-        githubActions = nix-github-actions.lib.mkGithubMatrix { checks = self.packages; };
       };
       perSystem = {
         config,
