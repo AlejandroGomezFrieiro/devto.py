@@ -21,7 +21,7 @@ jobs:
     # - name: Sync shell
     #   run: uv sync
     - name: Run tests
-      run: pytest
+      run: devenv test
   lint:
     strategy:
       matrix:
