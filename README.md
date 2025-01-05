@@ -1,28 +1,26 @@
 # devto_api
 
-Foobar is a Python library wrapping the DevTo API version 1.
+`devto` is a modern Python API client for the Forem API V1, written with `aiohttp` and `pydantic`.
+
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Currently there are no Pypi wheels, use
 
 ```bash
-pip install devto_api
+pip install git+https://github.com/AlejandroGomezFrieiro/devto_py.git
 ```
 
 ## Usage
 
 ```python
-# import foobar
-#
-# # returns 'words'
-# foobar.pluralize('word')
-#
-# # returns 'geese'
-# foobar.pluralize('goose')
-#
-# # returns 'phenomenon'
-# foobar.singularize('phenomena')
+from devto import DevtoClient
+import asyncio
+
+async def main():
+    async with DevtoClient() as client:
+        return await client.published_articles()
+asyncio.run(main())
 ```
 
 ## Contributing
