@@ -22,7 +22,7 @@ jobs:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
     - name: Install dependencies
-      run: uv install
+      run: uv sync
     - name: Prepare package for release
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
