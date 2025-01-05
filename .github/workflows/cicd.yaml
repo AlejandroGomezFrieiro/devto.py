@@ -28,6 +28,8 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           version: "latest"
+      - name: Sync
+        run: uv sync
 
       - name: Action | Semantic Version Release
         id: release
