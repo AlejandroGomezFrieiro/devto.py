@@ -21,7 +21,7 @@ jobs:
       with:
         arguments: --no-pure-eval
     - name: Sync shell
-      uses: uv sync
+      run: uv sync
     - name: Action | Semantic Version Release
       id: release
       # Adjust tag with desired version if applicable.
