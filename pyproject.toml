@@ -22,7 +22,7 @@ source = "uv-dynamic-versioning"
 [tool.uv-dynamic-versioning]
 vcs = "git"
 style = "semver"
-bump = "true"
+# bump = "true"
 
 [dependency-groups]
 dev = [
@@ -45,9 +45,10 @@ default = true
 
 [tool.semantic_release]
 branch = "main"                             # branch to make releases of
-tag_format = "v{version}"
+# tag_format = "v{version}"
 version_variable = "pyproject.toml:version" # version location
 changelog_file = "CHANGELOG.md"             # changelog file
+build_command = "uv build"
 dist_path = "dist/"                         # where to put dists
 upload_to_release = true                    # auto-create GitHub release
 upload_to_pypi = false                      # don't auto-upload to PyPI
